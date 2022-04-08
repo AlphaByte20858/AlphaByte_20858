@@ -1,0 +1,78 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import java.util.List;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+
+@TeleOP(name = "DETECTAR_OBJETOS", group = "Concept")
+public class Reconhecimento_Objeto extends LinearOpMode{
+
+    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+    private static final String[] LABELS = { "BALL", "CUBE", "DUCK", "MARKER"};
+
+    private static final String VUFORIA_KEY =
+            "AVThdyr/////AAABmQCgbkoHXUNjhXLbSflwbR9KfGQM/BrQdWV4x5rtcvC8nVrwO3ehsHhYSAyA18noEa+dTdZRWjiHPJrCHp6K8s7eI025exVo5qHCsJwvCMYFdH4r1LvfinfH6rkaamB7R5CBs0TscGdyZRZWL0pp5E4oIqRJi9L20slAn/1bsbS6ZzQ09YU9s9Pkk4CzW8r6lm/CWbOPohV8YK+ON9nHFZ60hUxE9uS/7lmLackxOj0NAAhMwYzx6GCJhkLN72qVU8+XmXvjgCLddYDhoBy9ZOYOrc//9VAyHOWZr+jGHRqTe+qW4Q5gardDLOx1q5VKEFET7Z6PE4n7CgQdLS1CCRGI722MQto6z2XdciQlfcBG"
+
+    private VuforiaLocalizer vuforia;
+    private TFObjectDetection tfod;
+
+
+    @Override
+    public void runOpMode(){
+        initVuforia();
+        initTfod();
+
+        if(tfod = null){
+            tfod.activate();
+            tfod.setZoom(2.5, 16.0/9.0);
+        }
+
+        telemetry.addData(">", "Press Play to start");
+        telemetry.update();
+        waitForStart();
+
+        if(opModeIsActive()){
+            while(opModeIsActive())
+                List<Recogonition> updatedRecogonitions = tfod.GetUpdatedRecognitions();
+            if(updatedRecognitions = null) {
+                telemetry.addData("#Object Detected", updatedRecognitions.size());
+
+                int i = 0;
+                for (Recognition recognition : updatedRecognitions) {
+                    telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                    telemetry.addData(String.format("left, top (%d)", i), "%.03f , %.03f",
+                            recognition.getLeft(), recognition.getTop());
+                    telemetry.addData(String.format("right, bottom (%d)", i), "%.03f, %.03f",
+                            recognition.getRight(), recognition.getBottom());
+                    i++
+
+                }
+                telemetry.update();
+
+            }
+        }
+    }
+
+    private void initVuforia(){
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "WebCam1");
+
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+    }
+
+    private void initTfod(){
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id",
+                hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minResultConfidence = 0.8f;
+        tfodParameters.isModelTensorFlow2 = true;
+        tfodParameters.inputSize = 320;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+    }
