@@ -24,6 +24,7 @@ public class servo extends LinearOpMode{
 
     public void climbOpMode() {
         servoArm = hardwareMap.get(Servo.class, "arm");
+        servoHand = hardwareMap.get(Servo.class, "hand");
         servoArm.setPosition(Servo.MAX_POSITION);
 
         telemetry.addData(">", "Press Start to scan Servo.");
