@@ -17,13 +17,13 @@ public class Carrousel extends LinearOpMode {
     }
 
     public void climbOpMode(){
-        if(gamepad1.y && !active)
+        if(gamepad2.y && !active)
         {
             active = true;
             motor.setPower(0.5);
             sleep(500);
         }
-        if(gamepad1.a && active)
+        if(gamepad2.a && active)
         {
             motor.setPower(0);
         }
