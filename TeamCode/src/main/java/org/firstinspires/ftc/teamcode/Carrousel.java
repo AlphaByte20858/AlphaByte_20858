@@ -17,7 +17,7 @@ public class Carrousel extends LinearOpMode {
     }
 
     public void climbOpMode(){
-        if(gamepad2.y && !active)
+        if(gamepad2.b && !active)
         {
             active = true;
             motor.setPower(0.5);
