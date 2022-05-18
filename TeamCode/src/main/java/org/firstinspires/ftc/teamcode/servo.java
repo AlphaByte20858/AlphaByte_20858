@@ -32,22 +32,20 @@ public class servo extends LinearOpMode{
         waitForStart();
 
         while (opModeIsActive()) {
-            if(gamepad2.b){
-               servoArm.setPosition(MIN_POS);
-               sleep(100);
-               servoHand.setPosition(MAX_POS);
-            }
-            if (gamepad2.a){
-                servoArm.setPosition(MAX_POS);
-                sleep(100);
-                servoHand.setPosition(MIN_POS);
-            }
-            if (gamepad2.x && gamepad2.right_bumper)
-            {
-                servoHand.setPosition(MIN_POS);
-                sleep(500);
-                servoHand.setPosition(MAX_POS);
-            }
+              //ARM
+          if(gamepad2.y && !up){
+              servoArm.setPosition(MAX_POS);
+          }
+          if(gamepad2.y && up){
+              servoArm.setPosition(MIN_POS);
+          }
+           //HAND
+          if(gamepad2.x && !open){
+              servoHand.setPosition(MAX_POS);
+          }
+          if(gamepad2.x && open){
+              servoHand.setPosition(MIN_POS);
+          }
 
 
             telemetry.addData("Servo Position", "%5.2f", position);
