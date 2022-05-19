@@ -8,24 +8,19 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp(name = "Carrousel", group = "Auto")
 @Disabled
 public class Carrousel extends LinearOpMode {
-
-    public boolean active = false;
     public DcMotor motor;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        motor = hardwareMap.get(DcMotor.class, "coreHex");
+        motor.setDirection(DcMotor.Direction.FORWARD);
+        motor.getCurrentPosition();
     }
 
     public void climbOpMode(){
-        if(gamepad2.b && !active)
-        {
-            active = true;
-            motor.setPower(0.5);
-            sleep(500);
-        }
-        if(gamepad2.a && active)
-        {
-            motor.setPower(0);
-        }
+        double runMotor;
+
+        runMotor = gamepad2.right_trigger;
+        motor.setPower(runMotor);
     }
 }
