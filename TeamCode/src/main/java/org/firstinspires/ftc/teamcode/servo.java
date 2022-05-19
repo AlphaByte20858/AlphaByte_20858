@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -10,65 +11,53 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Disabled
 public class servo extends LinearOpMode{
 
-    static final double INCREMENT = 0.2;     // amount to slew servo each CYCLE_MS cycle
-    static final int CYCLE_MS = 500;     // period of each cycle
-    static final double MAX_POS = 1.0;     // Maximum rotational position
-    static final double MIN_POS = 0.0;     // Minimum rotational position
-
-
     Servo servoArm;
+    Servo servoFist;
+    Servo servoBase;
     Servo servoHand;
-    double position = MIN_POS;
 
+    double basePos = 0.0;
+    double armPos = 0.0;
+    double fistPos = 0.0;
+    double handPos = 0.0;
 
+    final double speed = 0.01;
 
     public void climbOpMode() {
+        servoBase = hardwareMap.get(Servo.class, "base");
         servoArm = hardwareMap.get(Servo.class, "arm");
         servoHand = hardwareMap.get(Servo.class, "hand");
-        servoArm.setPosition(Servo.MAX_POSITION);
+        servoFist = hardwareMap.get(Servo.class, "fist");
 
-        telemetry.addData(">", "Press Start to scan Servo.");
-        telemetry.update();
-        waitForStart();
+        servoArm.setPosition(armPos);
+        servoHand.setPosition(handPos);
+        servoBase.setPosition(basePos);
+        servoFist.setPosition(fistPos);
 
         while (opModeIsActive()) {
-              //ARM
-          if(gamepad2.y && !up){
-              servoArm.setPosition(MAX_POS);
-          }
-          if(gamepad2.y && up){
-              servoArm.setPosition(MIN_POS);
-          }
-           //HAND
-          if(gamepad2.x && !open){
-              servoHand.setPosition(MAX_POS);
-          }
-          if(gamepad2.x && open){
-              servoHand.setPosition(MIN_POS);
-          }
-
-
-            telemetry.addData("Servo Position", "%5.2f", position);
-            telemetry.addData(">", "Press Stop to end test." );
-            telemetry.update();
-
-            // Set the servo to the new position and pause;
-            servoArm.setPosition(position);
-            sleep(CYCLE_MS);
-            idle();
-
-            telemetry.addData(">", "Done");
-            telemetry.update();
-
+            if(gamepad2.y){
+               basePos += speed;
+               armPos += speed;
+               fistPos += speed;
+               handPos += speed;
+            }
+            else if(gamepad2.x){
+                basePos -= speed;
+                armPos -= speed;
+                fistPos -= speed;
+                handPos -= speed;
+            }
         }
-
-        }
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
 
     }
 }
+
+
+
 
 
 
