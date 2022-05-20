@@ -123,13 +123,13 @@ public class TeleOp_20858 extends OpMode{
     }
 
     private void arm() {
-        if(gamepad2.x && active){
+        if(gamepad2.y && active){
             basePos += speed;
             armPos += speed;
             fistPos += speed;
             handPos += speed;
         }
-        else if(gamepad2.x){
+        else if(gamepad2.y){
             basePos -= speed;
             armPos -= speed;
             fistPos -= speed;
