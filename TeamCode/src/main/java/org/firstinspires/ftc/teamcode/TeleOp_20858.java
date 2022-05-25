@@ -7,29 +7,19 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "TeleOp_Oficial_20858", group = "OpMode")
-public class TeleOp_20858 extends OpMode{
+public class TeleOp_20858 extends OpMode {
     public DcMotor mFE, mTE, mFD, mTD;
     public DcMotor coreHex1, coreHex2;
 
-    boolean active = true;
-
     Servo servoArm;
-    Servo servoFist;
     Servo servoBase;
     Servo servoHand;
-
-    double basePos = 0.0;
-    double armPos = 0.0;
-    double fistPos = 0.0;
-    double handPos = 0.0;
-
-    final double speed = 0.01;
 
     @Override
     public void init() {
         mFE = hardwareMap.get(DcMotor.class, "FL");
         mFD = hardwareMap.get(DcMotor.class, "FR");
-        mTE= hardwareMap.get(DcMotor.class, "BL");
+        mTE = hardwareMap.get(DcMotor.class, "BL");
         mTD = hardwareMap.get(DcMotor.class, "BR");
 
         coreHex1 = hardwareMap.get(DcMotor.class, "coreHex");
@@ -38,10 +28,10 @@ public class TeleOp_20858 extends OpMode{
         coreHex2.setDirection(DcMotor.Direction.FORWARD);
 
 
-        mFE.setDirection(DcMotor.Direction.REVERSE);
-        mFD.setDirection(DcMotor.Direction.FORWARD);
-        mTE.setDirection(DcMotor.Direction.REVERSE);
-        mTD.setDirection(DcMotor.Direction.FORWARD);
+        mFE.setDirection(DcMotor.Direction.FORWARD);
+        mFD.setDirection(DcMotor.Direction.REVERSE);
+        mTE.setDirection(DcMotor.Direction.FORWARD);
+        mTD.setDirection(DcMotor.Direction.REVERSE);
 
         mTE.getCurrentPosition();
         mTD.getCurrentPosition();
@@ -52,15 +42,10 @@ public class TeleOp_20858 extends OpMode{
         servoBase = hardwareMap.get(Servo.class, "base");
         servoArm = hardwareMap.get(Servo.class, "arm");
         servoHand = hardwareMap.get(Servo.class, "hand");
-        servoFist = hardwareMap.get(Servo.class, "fist");
-
-        servoArm.setPosition(armPos);
-        servoHand.setPosition(handPos);
-        servoBase.setPosition(basePos);
-        servoFist.setPosition(fistPos);
 
     }
-    public void motorPower(float powLF, float powLB, float powRF, float powRB){
+
+    public void motorPower(float powLF, float powLB, float powRF, float powRB) {
         mFE.setPower(powLF);
         mTE.setPower(powLB);
         mFD.setPower(powRF);
@@ -68,7 +53,7 @@ public class TeleOp_20858 extends OpMode{
     }
 
     @Override
-    public void loop(){
+    public void loop() {
         drive();
         arm();
         roda();
@@ -80,11 +65,14 @@ public class TeleOp_20858 extends OpMode{
     }
 
     private void roda() {
-        if(gamepad1.y && !active){
+        if (gamepad1.right_bumper) {
             coreHex1.setPower(0.7);
             coreHex2.setPower(0.7);
         }
-        else if(gamepad1.y && active){
+        if (gamepad1.left_bumper) {
+            coreHex1.setPower(-0.7);
+            coreHex2.setPower(-0.7);
+        } else if (gamepad1.b) {
             coreHex1.setPower(0.0);
             coreHex2.setPower(0.0);
         }
@@ -123,18 +111,38 @@ public class TeleOp_20858 extends OpMode{
     }
 
     private void arm() {
-        if(gamepad2.y && active){
-            basePos += speed;
-            armPos += speed;
-            fistPos += speed;
-            handPos += speed;
-        }
-        else if(gamepad2.y){
-            basePos -= speed;
-            armPos -= speed;
-            fistPos -= speed;
-            handPos -= speed;
-        }
-    }
+      boolean front;
+      boolean frontArm;
+      boolean backArm;
+      boolean back;
+      boolean up;
+      boolean down;
 
+
+      front = gamepad2.right_bumper;
+      frontArm = gamepad2.x;
+      backArm = gamepad2.y;
+      back = gamepad2.left_bumper;
+      up = gamepad2.dpad_up;
+      down = gamepad2.dpad_down;
+
+      if(front){
+          servoBase.setPosition(1);
+      }
+      if(back){
+          servoBase.setPosition(0);
+      }
+      if(frontArm){
+          servoArm.setPosition(1);
+      }
+      if(backArm){
+          servoArm.setPosition(0);
+      }
+      if(up){
+          servoHand.setPosition(1);
+      }
+      if(down){
+          servoHand.setPosition(0);
+      }
+    }
 }
